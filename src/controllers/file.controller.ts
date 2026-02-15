@@ -60,6 +60,16 @@ export const updateMetadata = async (req: Request, res: Response) => {
 
   const updated = await prisma.file.update({
     where: { id },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      owner: true,
+      tags: true,
+      createdAt: true,
+      mimeType: true,
+      size: true,
+    },
     data: {
       name: name ?? file.name,
       description: description ?? file.description,
@@ -98,8 +108,26 @@ export const findAll = async (req: Request, res: Response) => {
     where.AND = filters
   }
 
-  const files = await prisma.file.findMany({ where })
-  res.json(files)
+  const files = await prisma.file.findMany({
+    where,
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      owner: true,
+      tags: true,
+      createdAt: true,
+      mimeType: true,
+      size: true,
+    }
+  })
+
+  const filesWithViewUrl = files.map(file => ({
+    ...file,
+    path: `/api/files/view/${file.id}`
+  }))
+
+  res.json(filesWithViewUrl)
 }
 
 export const download = async (req: Request, res: Response) => {
@@ -112,6 +140,18 @@ export const download = async (req: Request, res: Response) => {
   }
 
   res.download(file.path, file.originalName)
+}
+
+export const view = async (req: Request, res: Response) => {
+  const file = await prisma.file.findUnique({
+    where: { id: req.params.id }
+  })
+
+  if (!file) {
+    return res.status(404).json({ message: 'Not found' })
+  }
+
+  res.sendFile(path.resolve(file.path))
 }
 
 export const remove = async (req: Request, res: Response) => {

@@ -84,6 +84,24 @@ router.get('/', (req, res, next) => {
   next()
 }, fileController.findAll)
 
+router.get('/view/:id', (req, res, next) => {
+  /* #swagger.tags = ['Files'] */
+  /* #swagger.summary = 'Visualizar arquivo (sem download)' */
+  /* #swagger.parameters['id'] = {
+        in: 'path',
+        description: 'ID do arquivo',
+        required: true,
+        type: 'string'
+  } */
+  /* #swagger.responses[200] = {
+        description: 'Arquivo encontrado e pronto para visualização'
+  } */
+  /* #swagger.responses[404] = {
+        description: 'Arquivo não encontrado'
+  } */
+  next()
+}, fileController.view)
+
 router.get('/:id', (req, res, next) => {
   /* #swagger.tags = ['Files'] */
   /* #swagger.summary = 'Download do arquivo' */
