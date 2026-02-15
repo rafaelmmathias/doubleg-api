@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   db:
     image: postgres:16
@@ -15,18 +13,22 @@ services:
       timeout: 5s
       retries: 5
 
-  api:
+  doubleg-api:
+    image: doubleg-api:latest
     build: .
     ports:
       - "3000:3000"
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/fileapi
     volumes:
-      - .:/app
-      - /app/node_modules
+      - uploads:/app/uploads
+      - ./src:/app/src
     depends_on:
       db:
         condition: service_healthy
+    networks:
+      - default
+      - dragonsot_network
 
   adminer:
     image: adminer
@@ -35,3 +37,11 @@ services:
 
 volumes:
   db_data:
+  uploads:
+
+networks:
+  default:
+    external: true
+    name: doubleg_network
+  dragonsot_network:
+    external: true

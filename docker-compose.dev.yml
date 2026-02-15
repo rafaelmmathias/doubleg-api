@@ -1,0 +1,10 @@
+services:
+  doubleg-api:
+    command: sh -c "npx prisma db push && npm run dev"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      CHOKIDAR_USEPOLLING: "true"
+      

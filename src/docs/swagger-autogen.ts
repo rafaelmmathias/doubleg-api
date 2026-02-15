@@ -3,7 +3,7 @@ import path from 'path'
 const swagger = swaggerAutogen()
 
 
-const outputFile = path.resolve('src/swagger.json')
+const outputFile = path.resolve('src/docs/swagger.json')
 const routes = [path.resolve('src/routes/file.routes.ts')]
 
 

@@ -81,9 +81,11 @@ export const download = async (req: Request, res: Response) => {
     where: { id: req.params.id }
   })
 
-  if (!file) return res.status(404).json({ message: 'Not found' })
+  if (!file) {
+    return res.status(404).json({ message: 'Not found' })
+  }
 
-  res.download(file.path)
+  res.download(file.path, file.originalName)
 }
 
 export const remove = async (req: Request, res: Response) => {
