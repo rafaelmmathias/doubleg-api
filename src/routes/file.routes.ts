@@ -67,7 +67,7 @@ router.put('/:id', (req, res, next) => {
         }
   } */
   /* #swagger.responses[200] = {
-        description: 'Arquivo atualizado com sucesso'
+        description: 'Payload com o arquivo atualizadoo'
   } */
   /* #swagger.responses[404] = {
         description: 'Arquivo não encontrado'
