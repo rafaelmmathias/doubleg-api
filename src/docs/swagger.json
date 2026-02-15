@@ -26,9 +26,6 @@
         "summary": "Fazer upload de arquivo",
         "description": "",
         "responses": {
-          "200": {
-            "description": "OK"
-          },
           "201": {
             "description": "Arquivo criado com sucesso"
           },
@@ -80,18 +77,6 @@
         ],
         "summary": "Listar arquivos",
         "description": "",
-        "parameters": [
-          {
-            "name": "q",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "tag",
-            "in": "query",
-            "type": "string"
-          }
-        ],
         "responses": {
           "200": {
             "description": "Lista de arquivos"
@@ -119,7 +104,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Arquivo atualizado com sucesso"
+            "description": "Payload com o arquivo atualizadoo"
           },
           "404": {
             "description": "Arquivo não encontrado"
@@ -134,11 +119,11 @@
                 "properties": {
                   "name": {
                     "type": "string",
-                    "example": "Novo nome"
+                    "example": "Nome atualizado"
                   },
                   "description": {
                     "type": "string",
-                    "example": "Nova descrição"
+                    "example": "Descrição atualizada"
                   }
                 }
               }
