@@ -59,8 +59,8 @@ router.put('/:id', (req, res, next) => {
             schema: {
               type: 'object',
               properties: {
-                name: { type: 'string', example: 'Novo nome' },
-                description: { type: 'string', example: 'Nova descrição' }
+                name: { type: 'string', example: 'Nome atualizado' },
+                description: { type: 'string', example: 'Descrição atualizada' }
               }
             }
           }
