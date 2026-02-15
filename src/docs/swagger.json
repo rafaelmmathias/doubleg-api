@@ -198,6 +198,32 @@
           }
         }
       }
+    },
+    "/view/{id}": {
+      "get": {
+        "tags": [
+          "Files"
+        ],
+        "summary": "Visualizar arquivo (sem download)",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID do arquivo"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Arquivo encontrado e pronto para visualização"
+          },
+          "404": {
+            "description": "Arquivo não encontrado"
+          }
+        }
+      }
     }
   }
 }

@@ -122,7 +122,7 @@ export const findAll = async (req: Request, res: Response) => {
     }
   })
 
-  const filesWithViewUrl = files.map(file => ({
+  const filesWithViewUrl = files.map((file: any) => ({
     ...file,
     path: `/api/files/view/${file.id}`
   }))
