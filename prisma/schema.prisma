@@ -13,6 +13,7 @@ model File {
   name         String
   description  String?
   owner        String?
+  tags         String[]
   originalName String
   storedName   String
   mimeType     String

@@ -10,8 +10,7 @@ export const create = async (req: Request, res: Response) => {
     return res.status(400).json({ message: 'No file provided' })
   }
 
-  const { name, description, owner } = req.body
-
+  const { name, description, owner, tags } = req.body
   if (!name) {
     return res.status(400).json({ message: 'Name is required' })
   }
@@ -34,6 +33,7 @@ export const create = async (req: Request, res: Response) => {
       name,
       owner,
       description,
+      tags: tags ?? [],
       originalName: req.file.originalname,
       storedName: `${hash}${ext}`,
       mimeType: req.file.mimetype,
@@ -48,7 +48,7 @@ export const create = async (req: Request, res: Response) => {
 
 export const updateMetadata = async (req: Request, res: Response) => {
   const { id } = req.params
-  const { name, description, owner } = req.body
+  const { name, description, owner, tags } = req.body
 
   const file = await prisma.file.findUnique({
     where: { id }
@@ -63,16 +63,42 @@ export const updateMetadata = async (req: Request, res: Response) => {
     data: {
       name: name ?? file.name,
       description: description ?? file.description,
-      owner: owner ?? file.owner
+      owner: owner ?? file.owner,
+      tags: tags ?? file.tags
     }
   })
 
   res.json(updated)
 }
 
+export const findAll = async (req: Request, res: Response) => {
+  const { q, tag } = req.query
 
-export const findAll = async (_: Request, res: Response) => {
-  const files = await prisma.file.findMany()
+  const where: any = {}
+
+  const filters: any[] = []
+
+  if (q) {
+    filters.push({
+      OR: [
+        { name: { contains: q, mode: 'insensitive' } },
+        { description: { contains: q, mode: 'insensitive' } },
+        { owner: { contains: q, mode: 'insensitive' } }
+      ]
+    })
+  }
+
+  if (tag) {
+    filters.push({
+      tags: { hasSome: [tag] }
+    })
+  }
+
+  if (filters.length > 0) {
+    where.AND = filters
+  }
+
+  const files = await prisma.file.findMany({ where })
   res.json(files)
 }
 
