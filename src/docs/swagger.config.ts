@@ -9,7 +9,8 @@ export const swaggerConfig = {
   setup: (req: Request, res: Response, next: NextFunction) => {
     const doc = JSON.parse(JSON.stringify(swaggerDoc)) as any
     const host = req.get('host')
-    const protocol = req.protocol
+    // Check X-Forwarded-Proto first (for proxies/HTTPS), then fall back to req.protocol
+    const protocol = req.get('X-Forwarded-Proto') || req.protocol || 'http'
 
     if (doc.swagger && String(doc.swagger).startsWith('2')) {
       doc.host = host
