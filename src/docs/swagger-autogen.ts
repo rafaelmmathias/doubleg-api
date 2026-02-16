@@ -14,7 +14,7 @@ const doc = {
     description: 'API para gerenciamento de arquivos com Prisma',
     version: '1.0.0'
   },
-  host: 'localhost:3000',
+  host: '',
   basePath: '/',
   schemes: ['http', 'https'],
   tags: [
