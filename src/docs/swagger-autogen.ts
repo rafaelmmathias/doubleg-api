@@ -4,7 +4,7 @@ const swagger = swaggerAutogen()
 
 
 const outputFile = path.resolve('src/docs/swagger.json')
-const routes = [path.resolve('src/routes/file.routes.ts')]
+const routes = [path.resolve('src/app.ts')]
 
 
 
@@ -15,7 +15,7 @@ const doc = {
     version: '1.0.0'
   },
   host: 'localhost:3000',
-  basePath: '/api',
+  basePath: '/',
   schemes: ['http', 'https'],
   tags: [
     {
