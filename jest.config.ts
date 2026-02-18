@@ -6,7 +6,8 @@ const config: Config.InitialOptions = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'
   },
-  testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts']
+  testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
+  setupFilesAfterEnv: ['<rootDir>/src/tests/jest.setup.ts']
 }
 
 export default config
