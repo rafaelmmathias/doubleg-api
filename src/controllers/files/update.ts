@@ -1,37 +1,44 @@
 import { prisma } from '@/prisma/client'
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
+import { ApiError } from '@/errors/apiError'
 
-export const update = async (req: Request, res: Response) => {
-    const { id } = req.params
-    const { name, description, owner, tags } = req.body
+export const update = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params
+        const { name, description, owner, tags } = req.body
 
-    const file = await prisma.file.findUnique({
-        where: { id }
-    })
+        const file = await prisma.file.findUnique({
+            where: { id }
+        })
 
-    if (!file) {
-        return res.status(404).json({ message: 'File not found' })
-    }
-
-    const updated = await prisma.file.update({
-        where: { id },
-        select: {
-            id: true,
-            name: true,
-            description: true,
-            owner: true,
-            tags: true,
-            createdAt: true,
-            mimeType: true,
-            size: true,
-        },
-        data: {
-            name: name ?? file.name,
-            description: description ?? file.description,
-            owner: owner ?? file.owner,
-            tags: tags ?? file.tags
+        if (!file) {
+            throw new ApiError(404, 'File not found')
         }
-    })
 
-    res.json(updated)
+        const normalizedTags = typeof tags === 'string' ? [tags] : (tags ?? file.tags)
+
+        const updated = await prisma.file.update({
+            where: { id },
+            select: {
+                id: true,
+                name: true,
+                description: true,
+                owner: true,
+                tags: true,
+                createdAt: true,
+                mimeType: true,
+                size: true,
+            },
+            data: {
+                name: name ?? file.name,
+                description: description ?? file.description,
+                owner: owner ?? file.owner,
+                tags: normalizedTags
+            }
+        })
+
+        res.json(updated)
+    } catch (err) {
+        next(err)
+    }
 }

@@ -1,16 +1,26 @@
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import { prisma } from "@/prisma/client"
 import fs from 'fs'
+import { ApiError } from '@/errors/apiError'
 
-export const remove = async (req: Request, res: Response) => {
-    const file = await prisma.file.findUnique({
-        where: { id: req.params.id }
-    })
+export const remove = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const file = await prisma.file.findUnique({
+            where: { id: req.params.id }
+        })
 
-    if (!file) return res.status(404).json({ message: 'Not found' })
+        if (!file) throw new ApiError(404, 'File not found')
 
-    fs.unlinkSync(file.path)
-    await prisma.file.delete({ where: { id: file.id } })
+        try {
+            if (fs.existsSync(file.path)) fs.unlinkSync(file.path)
+        } catch (fsErr) {
+            console.warn('Could not remove file from disk', fsErr)
+        }
 
-    res.json({ message: 'Deleted' })
+        await prisma.file.delete({ where: { id: file.id } })
+
+        res.json({ message: 'Deleted' })
+    } catch (err) {
+        next(err)
+    }
 }
