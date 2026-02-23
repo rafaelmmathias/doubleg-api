@@ -13,7 +13,7 @@ model File {
   name         String
   description  String?
   owner        String?
-  tags         String[]
+  tags         Tag[]
   originalName String
   storedName   String
   mimeType     String
@@ -21,4 +21,13 @@ model File {
   hash         String   @unique
   path         String
   createdAt    DateTime @default(now())
+}
+
+model Tag {
+  id     String @id @default(uuid())
+  name   String
+  file   File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  fileId String
+
+  @@unique([fileId, name])
 }

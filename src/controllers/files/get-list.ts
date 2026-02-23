@@ -20,7 +20,7 @@ export const getList = async (req: Request, res: Response) => {
 
     if (tag) {
         filters.push({
-            tags: { hasSome: [tag] }
+            tags: { some: { name: tag } }
         })
     }
 
@@ -35,7 +35,7 @@ export const getList = async (req: Request, res: Response) => {
             name: true,
             description: true,
             owner: true,
-            tags: true,
+            tags: { select: { name: true } },
             createdAt: true,
             mimeType: true,
             size: true,
@@ -44,7 +44,8 @@ export const getList = async (req: Request, res: Response) => {
 
     const filesWithViewUrl = files.map((file: any) => ({
         ...file,
-        path: `/api/files/view/${file.id}`
+        path: `/api/files/view/${file.id}`,
+        tags: file.tags.map((t: { name: string }) => t.name)
     }))
 
     res.json(filesWithViewUrl)
