@@ -15,7 +15,14 @@ export const update = async (req: Request, res: Response, next: NextFunction) =>
             throw new ApiError(404, 'File not found')
         }
 
-        const normalizedTags = typeof tags === 'string' ? [tags] : (tags ?? file.tags)
+        const tagData = tags !== undefined
+            ? {
+                tags: {
+                    deleteMany: {},
+                    create: (typeof tags === 'string' ? [tags] : tags).map((tagName: string) => ({ name: tagName }))
+                }
+            }
+            : {}
 
         const updated = await prisma.file.update({
             where: { id },
@@ -24,7 +31,7 @@ export const update = async (req: Request, res: Response, next: NextFunction) =>
                 name: true,
                 description: true,
                 owner: true,
-                tags: true,
+                tags: { select: { name: true } },
                 createdAt: true,
                 mimeType: true,
                 size: true,
@@ -33,11 +40,11 @@ export const update = async (req: Request, res: Response, next: NextFunction) =>
                 name: name ?? file.name,
                 description: description ?? file.description,
                 owner: owner ?? file.owner,
-                tags: normalizedTags
+                ...tagData
             }
         })
 
-        res.json(updated)
+        res.json({ ...updated, tags: updated.tags.map((t) => t.name) })
     } catch (err) {
         next(err)
     }
